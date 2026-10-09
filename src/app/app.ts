@@ -1,8 +1,8 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ColorExtractorComponent } from './color-extractor.component';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [ColorExtractorComponent],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

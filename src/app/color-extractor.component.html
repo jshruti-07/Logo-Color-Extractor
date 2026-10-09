@@ -1,0 +1,1155 @@
+<div class="page-container">
+  <!-- Top Navigation Bar -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/" aria-label="Logo Color Extractor Home">
+        <div class="brand-text">
+          <span class="brand-title">Logo<span>Color</span></span>
+          <span class="brand-badge">PRO EXTRACTOR</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <div class="format-pills" aria-label="Supported image formats">
+          <span class="format-pill">PNG</span>
+          <span class="format-pill">JPG</span>
+          <span class="format-pill">SVG</span>
+          <span class="format-pill">WEBP</span>
+        </div>
+
+        <!-- Dual Theme Toggle Button -->
+        <button
+          class="theme-toggle-btn"
+          type="button"
+          (click)="toggleTheme()"
+          [attr.aria-label]="'Switch to ' + (currentTheme() === 'light' ? 'dark' : 'light') + ' mode'"
+          title="Toggle Light / Dark Mode"
+        >
+          @if (currentTheme() === 'light') {
+            <span class="theme-icon moon-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </span>
+            <span class="theme-text">Dark Mode</span>
+          } @else {
+            <span class="theme-icon sun-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+              </svg>
+            </span>
+            <span class="theme-text">Light Mode</span>
+          }
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    @if (!previewUrl()) {
+      <!-- Hero Intro Section -->
+      <section class="hero-section" aria-labelledby="main-heading">
+        <h1 id="main-heading" class="hero-title">
+          Extract Dominant Colors with <span class="gradient-text">Pixel Precision</span>
+        </h1>
+        
+        <p class="hero-description">
+          Upload any brand logo in PNG, JPG, WEBP, or SVG format. Our clustering engine isolates alpha transparency and generates production-ready HEX, RGB, HSL, HSV, and CMYK color profiles with WCAG accessibility scores, complete shades, tints, tones, and harmonies for every extracted color.
+        </p>
+
+        <!-- Dynamic Dropzone -->
+        <div
+          class="dropzone-card"
+          [class.drag-active]="isDragging()"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+          (click)="fileInput.click()"
+          role="region"
+          aria-label="File Upload Dropzone"
+        >
+          <input
+            #fileInput
+            class="hidden-input"
+            type="file"
+            accept=".png,.jpg,.jpeg,.svg,.webp,image/png,image/jpeg,image/svg+xml,image/webp"
+            (change)="onFileSelected($event)"
+            (click)="$event.stopPropagation()"
+          />
+
+          <div class="dropzone-icon-glow">
+            <div class="dropzone-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+            </div>
+          </div>
+
+          <h2 class="dropzone-title">
+            Drag &amp; drop your logo here, or <button type="button" class="browse-link" (click)="$event.stopPropagation(); fileInput.click()">browse files</button>
+          </h2>
+          
+          <p class="dropzone-subtitle">Supports PNG, JPG, JPEG, SVG &amp; WEBP (Max 15MB) • Or press <kbd>Ctrl+V</kbd> to paste</p>
+
+          <div class="dropzone-badges">
+            <span class="badge badge-alpha">
+              <svg class="mini-icon" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              Alpha Transparency Filter
+            </span>
+            <span class="badge badge-vector">
+              <svg class="mini-icon" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              Lossless SVG Vector
+            </span>
+            <span class="badge badge-wcag">
+              <svg class="mini-icon" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              Shades, Tints &amp; Tones
+            </span>
+          </div>
+        </div>
+
+        <!-- Sample Presets Section -->
+        <div class="preset-section">
+          <div class="preset-header">
+            <span class="preset-sparkle">✦</span>
+            <span>Or try instant sample brand logos:</span>
+          </div>
+          
+          <div class="preset-grid">
+            @for (preset of samplePresets; track preset.id) {
+              <button
+                type="button"
+                class="preset-card"
+                (click)="loadPreset(preset)"
+                [attr.aria-label]="'Load preset ' + preset.name"
+              >
+                <div class="preset-icon" aria-hidden="true">
+                  <div class="preset-mini-preview" [innerHTML]="preset.svgData"></div>
+                </div>
+                <div class="preset-info">
+                  <strong class="preset-name">{{ preset.name }}</strong>
+                  <span class="preset-desc">{{ preset.category }}</span>
+                </div>
+                <span class="preset-arrow">→</span>
+              </button>
+            }
+          </div>
+        </div>
+      </section>
+    } @else {
+      <!-- Active Image Workspace -->
+      <section class="workspace-section animate-fade-in" aria-label="Analysis Workspace">
+        <!-- Image Header Bar -->
+        <div class="workspace-card">
+          <div class="workspace-meta-row">
+            <!-- Full Preview Stage with Adaptive Background & Fullscreen View -->
+            <div class="preview-stage-container">
+              <!-- Stage Toolbar (Background selector & Zoom button) -->
+              <div class="stage-toolbar">
+                <div class="bg-mode-pills" role="radiogroup" aria-label="Preview background canvas">
+                  <button
+                    type="button"
+                    class="bg-pill"
+                    [class.active]="previewBgMode() === 'checkerboard'"
+                    (click)="setPreviewBg('checkerboard')"
+                    title="Alpha Checkerboard"
+                  >
+                    🏁 Alpha
+                  </button>
+                  <button
+                    type="button"
+                    class="bg-pill"
+                    [class.active]="previewBgMode() === 'white'"
+                    (click)="setPreviewBg('white')"
+                    title="Clean White Canvas"
+                  >
+                    ⚪ White
+                  </button>
+                  <button
+                    type="button"
+                    class="bg-pill"
+                    [class.active]="previewBgMode() === 'dark'"
+                    (click)="setPreviewBg('dark')"
+                    title="Deep Dark Canvas"
+                  >
+                    ⚫ Dark
+                  </button>
+                  <button
+                    type="button"
+                    class="bg-pill"
+                    [class.active]="previewBgMode() === 'slate'"
+                    (click)="setPreviewBg('slate')"
+                    title="Slate Canvas"
+                  >
+                    🔲 Slate
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  class="stage-expand-btn"
+                  (click)="openPreviewModal()"
+                  title="Expand to Full Resolution View"
+                  aria-label="Expand image"
+                >
+                  <svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                  </svg>
+                  Full View
+                </button>
+              </div>
+
+              <!-- Main Canvas Stage with Eyedropper Loupe -->
+              <div
+                class="preview-stage"
+                [class.preview-bg-checkerboard]="previewBgMode() === 'checkerboard'"
+                [class.preview-bg-white]="previewBgMode() === 'white'"
+                [class.preview-bg-dark]="previewBgMode() === 'dark'"
+                [class.preview-bg-slate]="previewBgMode() === 'slate'"
+                (mousemove)="onImageMouseMove($event)"
+                (mouseleave)="onImageMouseLeave()"
+                (click)="onImageClick($event)"
+                title="Hover image to inspect pixels, Click to copy sampled color"
+              >
+                <div class="img-wrapper">
+                  <img
+                    #previewImage
+                    [src]="previewUrl()"
+                    [alt]="'Logo Preview for ' + imageMeta()?.name"
+                    class="preview-stage-img"
+                  />
+                </div>
+
+                @if (isLoupeActive() && hoveredPixelColor()) {
+                  <div
+                    class="loupe-indicator"
+                    [style.left.px]="loupeX()"
+                    [style.top.px]="loupeY()"
+                  >
+                    <div class="loupe-swatch" [style.background]="hoveredPixelColor()"></div>
+                    <div class="loupe-tooltip">
+                      <strong class="loupe-hex">{{ hoveredPixelColor() }}</strong>
+                      <span class="loupe-name">{{ hoveredColorName() }}</span>
+                      <small class="loupe-hint">Click to copy</small>
+                    </div>
+                  </div>
+                }
+              </div>
+              
+              <div class="stage-caption">
+                <span class="stage-tip-icon">✛</span>
+                <span>Hover over the image to inspect any pixel • Click to copy</span>
+              </div>
+            </div>
+
+            <!-- Image Details & Controls -->
+            <div class="image-meta-details">
+              <div class="meta-title-row">
+                <h2 class="image-filename" [title]="imageMeta()?.name">
+                  {{ imageMeta()?.name }}
+                </h2>
+                <span class="format-badge">{{ imageMeta()?.format }}</span>
+              </div>
+
+              <div class="meta-metrics-grid">
+                <div class="metric-pill">
+                  <span class="metric-label">Resolution</span>
+                  <strong class="metric-value">{{ imageMeta()?.dimensions }}</strong>
+                </div>
+                <div class="metric-pill">
+                  <span class="metric-label">File Size</span>
+                  <strong class="metric-value">{{ imageMeta()?.formattedSize }}</strong>
+                </div>
+                <div class="metric-pill">
+                  <span class="metric-label">Visible Pixels</span>
+                  <strong class="metric-value">{{ imageMeta()?.visiblePixels | number }}</strong>
+                </div>
+              </div>
+
+              <!-- Color Palette Density Switcher -->
+              <div class="density-controls">
+                <span class="control-label">Palette Filter:</span>
+                <div class="pill-segmented-control" role="radiogroup" aria-label="Number of dominant colors">
+                  <button
+                    type="button"
+                    class="segment-btn"
+                    [class.active]="colorCount() === 0"
+                    (click)="setColorCount(0)"
+                  >
+                    All Colors ({{ allExtractedColors().length }})
+                  </button>
+                  <button
+                    type="button"
+                    class="segment-btn"
+                    [class.active]="colorCount() === 3"
+                    (click)="setColorCount(3)"
+                  >
+                    Top 3
+                  </button>
+                  <button
+                    type="button"
+                    class="segment-btn"
+                    [class.active]="colorCount() === 5"
+                    (click)="setColorCount(5)"
+                  >
+                    Top 5
+                  </button>
+                  <button
+                    type="button"
+                    class="segment-btn"
+                    [class.active]="colorCount() === 8"
+                    (click)="setColorCount(8)"
+                  >
+                    Top 8
+                  </button>
+                  @if (allExtractedColors().length > 8) {
+                    <button
+                      type="button"
+                      class="segment-btn"
+                      [class.active]="colorCount() === 12"
+                      (click)="setColorCount(12)"
+                    >
+                      Top 12
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <!-- Action Bar -->
+              <div class="workspace-actions">
+                <label class="btn btn-secondary">
+                  <input
+                    class="hidden-input"
+                    type="file"
+                    accept=".png,.jpg,.jpeg,.svg,.webp,image/png,image/jpeg,image/svg+xml,image/webp"
+                    (change)="onFileSelected($event)"
+                  />
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+                  Upload Another Logo
+                </label>
+
+                <button class="btn btn-primary" type="button" (click)="downloadSvgCard()">
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download SVG Swatch
+                </button>
+
+                <button class="btn btn-ghost text-danger" type="button" (click)="clearImage()" title="Clear workspace">
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs-container" aria-label="Palette views">
+          <div class="nav-tabs">
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'palette'"
+              (click)="activeTab.set('palette')"
+            >
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="2" />
+                <rect x="14" y="3" width="7" height="7" rx="2" />
+                <rect x="14" y="14" width="7" height="7" rx="2" />
+                <rect x="3" y="14" width="7" height="7" rx="2" />
+              </svg>
+              Extracted Colors ({{ colors().length }})
+            </button>
+
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'harmonies'"
+              (click)="activeTab.set('harmonies')"
+            >
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="3" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 9h18M9 21V9" />
+              </svg>
+              Website Theme Palette (6 Tokens)
+            </button>
+
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'export'"
+              (click)="activeTab.set('export')"
+            >
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+              Code Export Center
+            </button>
+          </div>
+        </nav>
+
+        <!-- Tab 1: Extracted Dominant Color Cards -->
+        @if (activeTab() === 'palette') {
+          <section id="results-section" class="results-container animate-fade-in" aria-labelledby="dominant-colors-title">
+            <div class="section-title-row">
+              <div>
+                <h3 id="dominant-colors-title" class="section-title">
+                  Extracted Color Palette 
+                  <span class="badge-count">{{ colorCount() === 0 ? 'All ' + colors().length + ' Colors' : 'Top ' + colors().length + ' of ' + allExtractedColors().length }}</span>
+                </h3>
+                <p class="section-subtitle">Ranked by proportion of visible pixel coverage &amp; contrast accessibility</p>
+              </div>
+
+              <button class="btn btn-sm btn-secondary" type="button" (click)="copyValue(exportContent(), 'Copied entire palette code!')">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Copy All Colors
+              </button>
+            </div>
+
+            <!-- Color Cards Grid -->
+            <div class="color-cards-grid" [attr.data-count]="colors().length">
+              @for (color of colors(); track color.hex; let i = $index) {
+                <article class="color-card" [class.is-primary]="i === 0">
+                  <!-- Swatch Banner -->
+                  <div
+                    class="card-swatch"
+                    [style.background]="color.hex"
+                    (click)="copyValue(color.hex, 'Copied HEX: ' + color.hex)"
+                    role="button"
+                    tabindex="0"
+                    [attr.aria-label]="'Copy color ' + color.hex"
+                  >
+                    <div class="swatch-top-bar">
+                      <span class="rank-tag">
+                        #{{ i + 1 }} {{ i === 0 ? 'DOMINANT' : i === 1 ? 'SECONDARY' : i === 2 ? 'ACCENT' : 'SHADE' }}
+                      </span>
+                      <span class="coverage-pill">{{ color.coverage | number:'1.1-1' }}%</span>
+                    </div>
+
+                    <div class="swatch-center-content">
+                      <span class="swatch-copy-hint" [style.color]="color.foreground">
+                        <svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                        </svg>
+                        Click to Copy
+                      </span>
+                    </div>
+
+                    <div class="swatch-bottom-bar">
+                      <div class="swatch-main-hex" [style.color]="color.foreground">
+                        <strong>{{ color.hex }}</strong>
+                        <span class="color-name-label">{{ color.name }}</span>
+                      </div>
+
+                      <!-- WCAG Contrast Badges -->
+                      <div class="wcag-group" title="WCAG 2.1 Contrast Ratio">
+                        <span class="wcag-tag" [class.pass]="color.wcagContrastWhite >= 4.5" title="Contrast vs White">
+                          W: {{ color.wcagContrastWhite }}
+                        </span>
+                        <span class="wcag-tag" [class.pass]="color.wcagContrastBlack >= 4.5" title="Contrast vs Black">
+                          B: {{ color.wcagContrastBlack }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Color Space Value Rows -->
+                  <div class="card-values-body">
+                    <!-- HEX -->
+                    <div class="value-row">
+                      <span class="format-label">HEX</span>
+                      <code class="format-code">{{ color.hex }}</code>
+                      <button
+                        type="button"
+                        class="copy-btn"
+                        [class.copied]="copiedKey() === color.hex"
+                        (click)="copyValue(color.hex, 'Copied HEX: ' + color.hex)"
+                        [attr.aria-label]="'Copy HEX code ' + color.hex"
+                      >
+                        {{ copiedKey() === color.hex ? '✓ Copied' : 'Copy' }}
+                      </button>
+                    </div>
+
+                    <!-- RGB -->
+                    <div class="value-row">
+                      <span class="format-label">RGB</span>
+                      <code class="format-code">rgb({{ color.rgb }})</code>
+                      <button
+                        type="button"
+                        class="copy-btn"
+                        [class.copied]="copiedKey() === 'rgb(' + color.rgb + ')'"
+                        (click)="copyValue('rgb(' + color.rgb + ')', 'Copied RGB: rgb(' + color.rgb + ')')"
+                        [attr.aria-label]="'Copy RGB value for ' + color.hex"
+                      >
+                        {{ copiedKey() === 'rgb(' + color.rgb + ')' ? '✓ Copied' : 'Copy' }}
+                      </button>
+                    </div>
+
+                    <!-- HSL -->
+                    <div class="value-row">
+                      <span class="format-label">HSL</span>
+                      <code class="format-code">hsl({{ color.hsl }})</code>
+                      <button
+                        type="button"
+                        class="copy-btn"
+                        [class.copied]="copiedKey() === 'hsl(' + color.hsl + ')'"
+                        (click)="copyValue('hsl(' + color.hsl + ')', 'Copied HSL: hsl(' + color.hsl + ')')"
+                        [attr.aria-label]="'Copy HSL value for ' + color.hex"
+                      >
+                        {{ copiedKey() === 'hsl(' + color.hsl + ')' ? '✓ Copied' : 'Copy' }}
+                      </button>
+                    </div>
+
+                    <!-- HSV -->
+                    <div class="value-row">
+                      <span class="format-label">HSV</span>
+                      <code class="format-code">hsv({{ color.hsv }})</code>
+                      <button
+                        type="button"
+                        class="copy-btn"
+                        [class.copied]="copiedKey() === 'hsv(' + color.hsv + ')'"
+                        (click)="copyValue('hsv(' + color.hsv + ')', 'Copied HSV: hsv(' + color.hsv + ')')"
+                        [attr.aria-label]="'Copy HSV value for ' + color.hex"
+                      >
+                        {{ copiedKey() === 'hsv(' + color.hsv + ')' ? '✓ Copied' : 'Copy' }}
+                      </button>
+                    </div>
+
+                    <!-- CMYK -->
+                    <div class="value-row">
+                      <span class="format-label">CMYK</span>
+                      <code class="format-code">cmyk({{ color.cmyk }})</code>
+                      <button
+                        type="button"
+                        class="copy-btn"
+                        [class.copied]="copiedKey() === 'cmyk(' + color.cmyk + ')'"
+                        (click)="copyValue('cmyk(' + color.cmyk + ')', 'Copied CMYK: cmyk(' + color.cmyk + ')')"
+                        [attr.aria-label]="'Copy CMYK value for ' + color.hex"
+                      >
+                        {{ copiedKey() === 'cmyk(' + color.cmyk + ')' ? '✓ Copied' : 'Copy' }}
+                      </button>
+                    </div>
+
+                    <!-- Card Footer Metrics -->
+                    <div class="card-footer-metrics">
+                      <div class="footer-stat">
+                        <span class="stat-label">PIXEL OCCURRENCE</span>
+                        <strong class="stat-val">{{ color.pixelCount | number }} px</strong>
+                      </div>
+                      <div class="footer-stat text-right">
+                        <span class="stat-label">PALETTE COVERAGE</span>
+                        <strong class="stat-val color-accent">{{ color.coverage | number:'1.1-1' }}%</strong>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              }
+            </div>
+
+            <!-- Distribution Breakdown Section -->
+            <section class="distribution-card" aria-labelledby="distribution-title">
+              <div class="dist-card-header">
+                <div class="dist-title-group">
+                  <span class="dist-icon">▥</span>
+                  <h4 id="distribution-title" class="dist-heading">Color Spectrum Distribution</h4>
+                </div>
+                <span class="dist-total-pixels">{{ imageMeta()?.visiblePixels | number }} Visible Pixels Analyzed</span>
+              </div>
+
+              <!-- Multi-segment continuous distribution bar -->
+              <div class="multi-segment-bar" role="progressbar" aria-label="Visual color distribution">
+                @for (color of colors(); track color.hex) {
+                  <div
+                    class="bar-segment"
+                    [style.width.%]="color.coverage"
+                    [style.background]="color.hex"
+                    [title]="color.name + ' (' + color.hex + '): ' + (color.coverage | number:'1.1-1') + '%'"
+                  ></div>
+                }
+              </div>
+
+              <!-- Distribution Individual Linear Rows -->
+              <div class="dist-rows-container">
+                @for (color of colors(); track color.hex; let i = $index) {
+                  <div class="dist-row">
+                    <div class="dist-row-label">
+                      <span class="dist-color-dot" [style.background]="color.hex"></span>
+                      <strong class="dist-hex">{{ color.hex }}</strong>
+                      <span class="dist-name">({{ color.name }})</span>
+                    </div>
+
+                    <div class="dist-row-track">
+                      <div
+                        class="dist-row-fill"
+                        [style.width.%]="color.coverage"
+                        [style.background]="color.hex"
+                      ></div>
+                    </div>
+
+                    <div class="dist-row-stats">
+                      <span class="dist-pixel-count">{{ color.pixelCount | number }} px</span>
+                      <strong class="dist-pct">{{ color.coverage | number:'1.1-1' }}%</strong>
+                    </div>
+                  </div>
+                }
+              </div>
+            </section>
+          </section>
+        }
+
+        <!-- Tab 2: Website Theme Palette Studio -->
+        @if (activeTab() === 'harmonies') {
+          <section class="theme-palette-container animate-fade-in" aria-labelledby="theme-palette-title">
+            <div class="section-title-row">
+              <div>
+                <h3 id="theme-palette-title" class="section-title">
+                  Website Theme Palette
+                  <span class="badge-count">6 Semantic Tokens</span>
+                </h3>
+                <p class="section-subtitle">
+                  Engineered design tokens tailored for your company website: top 3 logo colors, a desaturated UI gray tone for buttons &amp; menu backgrounds, and 2 harmonized neutral gray shades.
+                </p>
+              </div>
+
+              <button class="btn btn-sm btn-secondary" type="button" (click)="copyValue(exportContent(), 'Copied theme code tokens!')">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Copy Theme Code
+              </button>
+            </div>
+
+            @if (websiteThemePalette(); as palette) {
+              <!-- UI Tone Source Control Bar -->
+              <div class="tone-source-panel">
+                <div class="tone-source-header">
+                  <div class="tone-source-title">
+                    <span class="panel-badge-icon">🎛️</span>
+                    <strong>Brand UI Gray Tone Source:</strong>
+                  </div>
+                  <span class="tone-source-desc">Select which of the top 3 extracted brand colors drives the UI gray tone (used for buttons &amp; menu backgrounds):</span>
+                </div>
+
+                <div class="tone-source-pills" role="radiogroup" aria-label="Brand UI Gray Tone Source">
+                  <button
+                    type="button"
+                    class="tone-pill-btn"
+                    [class.active]="uiToneSourceIndex() === 0"
+                    (click)="setUiToneSource(0)"
+                  >
+                    <span class="tone-pill-dot" [style.background]="palette.primary.hex"></span>
+                    <span class="tone-pill-rank">#1 Dominant</span>
+                    <strong class="tone-pill-hex">{{ palette.primary.hex }}</strong>
+                    <span class="tone-pill-name">({{ palette.primary.name }})</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="tone-pill-btn"
+                    [class.active]="uiToneSourceIndex() === 1"
+                    (click)="setUiToneSource(1)"
+                  >
+                    <span class="tone-pill-dot" [style.background]="palette.secondary.hex"></span>
+                    <span class="tone-pill-rank">#2 Secondary</span>
+                    <strong class="tone-pill-hex">{{ palette.secondary.hex }}</strong>
+                    <span class="tone-pill-name">({{ palette.secondary.name }})</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="tone-pill-btn"
+                    [class.active]="uiToneSourceIndex() === 2"
+                    (click)="setUiToneSource(2)"
+                  >
+                    <span class="tone-pill-dot" [style.background]="palette.accent.hex"></span>
+                    <span class="tone-pill-rank">#3 Accent</span>
+                    <strong class="tone-pill-hex">{{ palette.accent.hex }}</strong>
+                    <span class="tone-pill-name">({{ palette.accent.name }})</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 6 Semantic Tokens Grid -->
+              <div class="theme-tokens-grid">
+                @for (token of palette.tokens; track token.id; let i = $index) {
+                  <article class="theme-token-card" [class.is-primary-token]="token.role === 'primary'">
+                    <!-- Swatch Banner -->
+                    <div
+                      class="theme-card-swatch"
+                      [style.background]="token.color.hex"
+                      (click)="copyValue(token.color.hex, 'Copied ' + token.label + ': ' + token.color.hex)"
+                      role="button"
+                      tabindex="0"
+                      [attr.aria-label]="'Copy color ' + token.color.hex"
+                    >
+                      <div class="theme-swatch-top">
+                        <span class="token-role-badge" [class]="'badge-' + token.role">
+                          {{ token.badge }}
+                        </span>
+                        @if (token.color.coverage > 0) {
+                          <span class="theme-coverage-pill">{{ token.color.coverage | number:'1.1-1' }}% coverage</span>
+                        } @else {
+                          <span class="theme-harmonic-pill">Theme Harmonized</span>
+                        }
+                      </div>
+
+                      <div class="theme-swatch-center">
+                        <span class="theme-copy-hint" [style.color]="token.color.foreground">
+                          <svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                          </svg>
+                          Click to Copy
+                        </span>
+                      </div>
+
+                      <div class="theme-swatch-bottom">
+                        <div class="theme-swatch-hex" [style.color]="token.color.foreground">
+                          <strong>{{ token.color.hex }}</strong>
+                          <span class="theme-color-name">{{ token.color.name }}</span>
+                        </div>
+
+                        <div class="wcag-group" title="WCAG 2.1 Contrast Ratio">
+                          <span class="wcag-tag" [class.pass]="token.color.wcagContrastWhite >= 4.5" title="Contrast vs White">
+                            W: {{ token.color.wcagContrastWhite }}
+                          </span>
+                          <span class="wcag-tag" [class.pass]="token.color.wcagContrastBlack >= 4.5" title="Contrast vs Black">
+                            B: {{ token.color.wcagContrastBlack }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Details Body -->
+                    <div class="theme-card-body">
+                      <div class="token-header-info">
+                        <h4 class="token-label">{{ token.label }}</h4>
+                        <p class="token-desc">{{ token.description }}</p>
+                      </div>
+
+                      <!-- Value Rows -->
+                      <div class="theme-values-stack">
+                        <div class="value-row">
+                          <span class="format-label">HEX</span>
+                          <code class="format-code">{{ token.color.hex }}</code>
+                          <button
+                            type="button"
+                            class="copy-btn"
+                            [class.copied]="copiedKey() === token.color.hex"
+                            (click)="copyValue(token.color.hex, 'Copied ' + token.label + ' HEX: ' + token.color.hex)"
+                          >
+                            {{ copiedKey() === token.color.hex ? '✓ Copied' : 'Copy' }}
+                          </button>
+                        </div>
+
+                        <div class="value-row">
+                          <span class="format-label">RGB</span>
+                          <code class="format-code">rgb({{ token.color.rgb }})</code>
+                          <button
+                            type="button"
+                            class="copy-btn"
+                            [class.copied]="copiedKey() === 'rgb(' + token.color.rgb + ')'"
+                            (click)="copyValue('rgb(' + token.color.rgb + ')', 'Copied RGB: rgb(' + token.color.rgb + ')')"
+                          >
+                            {{ copiedKey() === 'rgb(' + token.color.rgb + ')' ? '✓ Copied' : 'Copy' }}
+                          </button>
+                        </div>
+
+                        <div class="value-row">
+                          <span class="format-label">HSL</span>
+                          <code class="format-code">hsl({{ token.color.hsl }})</code>
+                          <button
+                            type="button"
+                            class="copy-btn"
+                            [class.copied]="copiedKey() === 'hsl(' + token.color.hsl + ')'"
+                            (click)="copyValue('hsl(' + token.color.hsl + ')', 'Copied HSL: hsl(' + token.color.hsl + ')')"
+                          >
+                            {{ copiedKey() === 'hsl(' + token.color.hsl + ')' ? '✓ Copied' : 'Copy' }}
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Recommended Website Role Callout -->
+                      <div class="token-use-box">
+                        <span class="token-use-label">Recommended Website Role:</span>
+                        <p class="token-use-text">{{ token.recommendedUse }}</p>
+                      </div>
+                    </div>
+                  </article>
+                }
+              </div>
+
+              <!-- Live Interactive Website Mockup Preview Container -->
+              <div class="website-mockup-section">
+                <div class="mockup-header-bar">
+                  <div class="mockup-title-group">
+                    <span class="mockup-icon">🌐</span>
+                    <div>
+                      <h4 class="mockup-heading">Live Website Theme Preview</h4>
+                      <p class="mockup-subheading">Preview how your 6 brand &amp; neutral tokens combine in a live website interface</p>
+                    </div>
+                  </div>
+                  <div class="mockup-browser-dots">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                  </div>
+                </div>
+
+                <!-- Realistic Website Component Canvas -->
+                <div class="mockup-canvas" [style.background]="palette.neutralBg.hex">
+                  <!-- 1. Header Navigation Bar -->
+                  <div
+                    class="mockup-navbar"
+                    [style.background]="palette.uiTone.hex"
+                    [style.borderBottom]="'1px solid ' + palette.neutralStructural.hex + '33'"
+                  >
+                    <div class="mockup-brand" [style.color]="palette.primary.hex">
+                      <span class="mockup-brand-circle" [style.background]="palette.primary.hex"></span>
+                      <strong>{{ imageMeta()?.name ? (imageMeta()?.name?.split('.')?.[0] || 'Brand') : 'Company' }}</strong>
+                    </div>
+
+                    <div class="mockup-nav-links">
+                      <span class="mockup-nav-item is-active" [style.color]="palette.primary.hex">Home</span>
+                      <span class="mockup-nav-item" [style.color]="palette.neutralStructural.hex">Solutions</span>
+                      <span class="mockup-nav-item" [style.color]="palette.neutralStructural.hex">About</span>
+                      <span class="mockup-nav-item" [style.color]="palette.neutralStructural.hex">Pricing</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      class="mockup-nav-btn"
+                      [style.background]="palette.primary.hex"
+                      [style.color]="palette.primary.foreground"
+                    >
+                      Get Started
+                    </button>
+                  </div>
+
+                  <!-- 2. Hero Section Preview -->
+                  <div class="mockup-hero-body">
+                    <div class="mockup-hero-badge" [style.background]="palette.accent.hex + '22'" [style.color]="palette.accent.hex" [style.borderColor]="palette.accent.hex + '55'">
+                      <span class="badge-dot" [style.background]="palette.accent.hex"></span>
+                      Brand New Experience
+                    </div>
+
+                    <h2 class="mockup-hero-title" [style.color]="palette.neutralStructural.hex">
+                      Elevate Your Business With <span [style.color]="palette.primary.hex">Harmonious Design</span>
+                    </h2>
+
+                    <p class="mockup-hero-desc" [style.color]="palette.neutralStructural.hex" style="opacity: 0.82;">
+                      This live preview automatically harmonizes the top 3 extracted logo shades, secondary accents, buttons, and neutral background surfaces into a unified theme.
+                    </p>
+
+                    <!-- Interactive Buttons Group -->
+                    <div class="mockup-btn-group">
+                      <!-- Primary CTA Button -->
+                      <button
+                        type="button"
+                        class="mockup-btn-cta"
+                        [style.background]="palette.primary.hex"
+                        [style.color]="palette.primary.foreground"
+                      >
+                        Explore Products →
+                      </button>
+
+                      <!-- Brand UI Tone Button (as specified in requirements) -->
+                      <button
+                        type="button"
+                        class="mockup-btn-secondary"
+                        [style.background]="palette.uiTone.hex"
+                        [style.color]="palette.neutralStructural.hex"
+                        [style.borderColor]="palette.neutralStructural.hex + '44'"
+                      >
+                        Menu &amp; Dashboard
+                      </button>
+                    </div>
+
+                    <!-- 3. Feature Showcase Cards -->
+                    <div class="mockup-cards-row">
+                      <div
+                        class="mockup-feature-card"
+                        [style.background]="'#ffffff'"
+                        [style.borderColor]="palette.neutralStructural.hex + '26'"
+                      >
+                        <div class="mockup-card-icon" [style.background]="palette.primary.hex + '18'" [style.color]="palette.primary.hex">
+                          ★
+                        </div>
+                        <h4 [style.color]="palette.neutralStructural.hex">Primary Dominant (#1)</h4>
+                        <p [style.color]="palette.neutralStructural.hex" style="opacity: 0.75;">
+                          Applied to high-impact hero call-to-actions, brand identity, and focal points.
+                        </p>
+                      </div>
+
+                      <div
+                        class="mockup-feature-card"
+                        [style.background]="'#ffffff'"
+                        [style.borderColor]="palette.neutralStructural.hex + '26'"
+                      >
+                        <div class="mockup-card-icon" [style.background]="palette.secondary.hex + '18'" [style.color]="palette.secondary.hex">
+                          ❖
+                        </div>
+                        <h4 [style.color]="palette.neutralStructural.hex">Secondary Shade (#2)</h4>
+                        <p [style.color]="palette.neutralStructural.hex" style="opacity: 0.75;">
+                          Provides thematic balance across secondary headings, badges, and interface assets.
+                        </p>
+                      </div>
+
+                      <div
+                        class="mockup-feature-card"
+                        [style.background]="'#ffffff'"
+                        [style.borderColor]="palette.neutralStructural.hex + '26'"
+                      >
+                        <div class="mockup-card-icon" [style.background]="palette.accent.hex + '18'" [style.color]="palette.accent.hex">
+                          ⚡
+                        </div>
+                        <h4 [style.color]="palette.neutralStructural.hex">Accent Highlight (#3)</h4>
+                        <p [style.color]="palette.neutralStructural.hex" style="opacity: 0.75;">
+                          Delivers vibrant visual contrast on pills, interactive notification tags, and highlights.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </section>
+        }
+
+        <!-- Tab 3: Code Export Center -->
+        @if (activeTab() === 'export') {
+          <section class="export-container animate-fade-in" aria-labelledby="export-title">
+            <div class="section-title-row">
+              <div>
+                <h3 id="export-title" class="section-title">Export Brand Palette</h3>
+                <p class="section-subtitle">Seamlessly integrate your extracted palette into your frontend design system</p>
+              </div>
+            </div>
+
+            <div class="export-workspace">
+              <!-- Export Format Selector Pills -->
+              <div class="export-tabs-bar">
+                <div class="export-format-pills" role="radiogroup" aria-label="Export format">
+                  <button
+                    type="button"
+                    class="format-btn"
+                    [class.active]="selectedExportFormat() === 'css'"
+                    (click)="selectedExportFormat.set('css')"
+                  >
+                    CSS Variables (:root)
+                  </button>
+                  <button
+                    type="button"
+                    class="format-btn"
+                    [class.active]="selectedExportFormat() === 'tailwind'"
+                    (click)="selectedExportFormat.set('tailwind')"
+                  >
+                    Tailwind CSS (config)
+                  </button>
+                  <button
+                    type="button"
+                    class="format-btn"
+                    [class.active]="selectedExportFormat() === 'json'"
+                    (click)="selectedExportFormat.set('json')"
+                  >
+                    JSON Schema
+                  </button>
+                  <button
+                    type="button"
+                    class="format-btn"
+                    [class.active]="selectedExportFormat() === 'scss'"
+                    (click)="selectedExportFormat.set('scss')"
+                  >
+                    SCSS Variables
+                  </button>
+                </div>
+
+                <div class="export-actions-row">
+                  <button class="btn btn-sm btn-secondary" type="button" (click)="copyValue(exportContent(), 'Copied code snippet!')">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                    Copy Snippet
+                  </button>
+                  <button class="btn btn-sm btn-primary" type="button" (click)="downloadExportCode()">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download File
+                  </button>
+                </div>
+              </div>
+
+              <!-- Code Preview Area -->
+              <div class="code-preview-box">
+                <div class="code-header">
+                  <div class="window-dots">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                  </div>
+                  <span class="code-filename">
+                    palette.{{ selectedExportFormat() === 'json' ? 'json' : selectedExportFormat() === 'tailwind' ? 'config.js' : selectedExportFormat() === 'scss' ? 'scss' : 'css' }}
+                  </span>
+                </div>
+                <pre class="code-content"><code>{{ exportContent() }}</code></pre>
+              </div>
+
+              <!-- SVG Visual Swatch Card Download Banner -->
+              <div class="svg-download-card">
+                <div class="svg-card-info">
+                  <div class="svg-badge">VISUAL ASSET</div>
+                  <h4>Download High-Res SVG Palette Card</h4>
+                  <p>Get a production-grade, beautifully formatted vector SVG graphic containing your color swatches, rank badges, and color formulas.</p>
+                </div>
+                <button class="btn btn-primary" type="button" (click)="downloadSvgCard()">
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download SVG Card
+                </button>
+              </div>
+            </div>
+          </section>
+        }
+      </section>
+
+      <!-- Full-Resolution Preview Modal / Lightbox -->
+      @if (isPreviewModalOpen()) {
+        <div class="modal-backdrop animate-fade-in" (click)="closePreviewModal()">
+          <div class="modal-dialog" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-label="Full Image Preview">
+            <div class="modal-header">
+              <div class="modal-title-group">
+                <h3 class="modal-title">{{ imageMeta()?.name }}</h3>
+                <span class="format-badge">{{ imageMeta()?.format }}</span>
+                <span class="modal-dim-badge">{{ imageMeta()?.dimensions }}</span>
+              </div>
+              <button class="modal-close-btn" type="button" (click)="closePreviewModal()" aria-label="Close modal">×</button>
+            </div>
+
+            <div
+              class="modal-body"
+              [class.preview-bg-checkerboard]="previewBgMode() === 'checkerboard'"
+              [class.preview-bg-white]="previewBgMode() === 'white'"
+              [class.preview-bg-dark]="previewBgMode() === 'dark'"
+              [class.preview-bg-slate]="previewBgMode() === 'slate'"
+            >
+              <img [src]="previewUrl()" [alt]="'Full preview of ' + imageMeta()?.name" class="modal-full-img" />
+            </div>
+
+            <div class="modal-footer">
+              <div class="bg-mode-pills" role="radiogroup" aria-label="Modal canvas background">
+                <button type="button" class="bg-pill" [class.active]="previewBgMode() === 'checkerboard'" (click)="setPreviewBg('checkerboard')">🏁 Alpha</button>
+                <button type="button" class="bg-pill" [class.active]="previewBgMode() === 'white'" (click)="setPreviewBg('white')">⚪ White</button>
+                <button type="button" class="bg-pill" [class.active]="previewBgMode() === 'dark'" (click)="setPreviewBg('dark')">⚫ Dark</button>
+                <button type="button" class="bg-pill" [class.active]="previewBgMode() === 'slate'" (click)="setPreviewBg('slate')">🔲 Slate</button>
+              </div>
+              <button class="btn btn-secondary btn-sm" type="button" (click)="closePreviewModal()">Close</button>
+            </div>
+          </div>
+        </div>
+      }
+    }
+
+    <!-- Feature Architecture Highlights -->
+    <section class="features-section" aria-label="Engine Capabilities">
+      <div class="features-grid">
+        <article class="feature-card">
+          <div class="feature-icon-box cyan-glow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Alpha Transparency Engine</h3>
+          <p class="feature-card-desc">
+            Excludes transparent and semi-transparent alpha background channels (&alpha; &lt; 125), preventing spurious white or gray artifact detection.
+          </p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon-box purple-glow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Vector &amp; Raster Support</h3>
+          <p class="feature-card-desc">
+            Safely rasterizes complex SVG vector logos alongside PNG, JPG, and WEBP bitmaps with high-DPI sub-pixel anti-aliasing preserved.
+          </p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon-box amber-glow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Multi-Space &amp; WCAG Contrast</h3>
+          <p class="feature-card-desc">
+            Instantly computes mathematical HEX, RGB, HSL, HSV, and CMYK color spaces with real-time WCAG 2.1 AA/AAA contrast ratio verification.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-dot"></span>
+        <span>Logo Color Extractor • Modern Angular Standalone &amp; Vanilla CSS Token Engine</span>
+      </div>
+      <div class="footer-tags">
+        <span class="code-tag">Angular Signals</span>
+        <span class="code-tag">Canvas 2D Clustering</span>
+        <span class="code-tag">WCAG 2.1</span>
+        <span class="code-tag">Zero Bloat CSS</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Floating Notification Stack -->
+  <div class="toast-container" role="status" aria-live="polite">
+    @for (toast of toasts(); track toast.id) {
+      <div class="toast-item" [class]="'toast-' + toast.type" (click)="dismissToast(toast.id)">
+        <div class="toast-icon">
+          @if (toast.type === 'success') {
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          } @else if (toast.type === 'error') {
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="9"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+          } @else {
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="9"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          }
+        </div>
+        <span class="toast-message">{{ toast.message }}</span>
+      </div>
+    }
+  </div>
+</div>
