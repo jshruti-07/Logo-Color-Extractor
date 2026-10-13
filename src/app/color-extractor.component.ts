@@ -5,9 +5,11 @@ import {
   OnInit,
   ViewChild,
   computed,
+  inject,
   signal
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 import {
   ColorHarmony,
   ColorResult,
@@ -20,6 +22,7 @@ import {
 } from './models/color.model';
 import { ColorEngine } from './services/color-engine';
 import { SAMPLE_PRESETS } from './services/sample-presets';
+import { ThemeService } from './services/theme.service';
 import {
   extractBrandColors,
   parseSvgColors,
@@ -29,11 +32,14 @@ import {
 @Component({
   selector: 'app-color-extractor',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './color-extractor.component.html',
   styleUrl: './color-extractor.component.css'
 })
 export class ColorExtractorComponent implements OnInit {
+  protected readonly themeService = inject(ThemeService);
+  private readonly router = inject(Router);
+
   @ViewChild('fileInput') fileInputRef?: ElementRef<HTMLInputElement>;
   @ViewChild('imageCanvas') imageCanvasRef?: ElementRef<HTMLCanvasElement>;
   @ViewChild('previewImage') previewImageRef?: ElementRef<HTMLImageElement>;
@@ -138,6 +144,24 @@ export class ColorExtractorComponent implements OnInit {
   exportContent = computed(() => {
     return ColorEngine.exportPalette(this.colors(), this.selectedExportFormat(), this.websiteThemePalette());
   });
+
+  hasActiveDashboardTheme = computed(() => this.themeService.currentTheme().isCustom);
+  activeDashboardPrimary = computed(() => this.themeService.currentTheme().primary);
+
+  /**
+   * Applies the extracted Website Theme Palette to the centralized ThemeService
+   * and navigates to the /dashboard route.
+   */
+  useThisTheme(): void {
+    const palette = this.websiteThemePalette();
+    if (!palette) {
+      this.showToast('Please extract logo colors first before applying theme.', 'warning');
+      return;
+    }
+    const meta = this.imageMeta();
+    this.themeService.applyPalette(palette, meta?.name);
+    this.router.navigate(['/dashboard']);
+  }
 
   private readonly allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp'];
   private readonly maxFileSize = 15 * 1024 * 1024; // 15MB

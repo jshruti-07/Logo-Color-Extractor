@@ -1,0 +1,724 @@
+<div class="dashboard-shell" [class.sidebar-collapsed]="!isSidebarOpen()">
+  <!-- Sidebar Navigation -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-brand">
+      <a routerLink="/" class="sidebar-brand-link" title="Return to Logo Color Extractor">
+        <div class="brand-logo-gem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+          </svg>
+        </div>
+        <div class="sidebar-brand-meta">
+          <span class="brand-name">Logo<strong>Color</strong></span>
+          <span class="brand-sub">THEME DASHBOARD</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav" aria-label="Dashboard Sidebar Navigation">
+      <div class="nav-section-title">NAVIGATION</div>
+      <button
+        type="button"
+        class="nav-item"
+        [class.active]="activeNavTab() === 'overview'"
+        (click)="activeNavTab.set('overview')"
+      >
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        </svg>
+        <span>Overview</span>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        [class.active]="activeNavTab() === 'tokens'"
+        (click)="activeNavTab.set('tokens')"
+      >
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+        </svg>
+        <span>Brand Tokens</span>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        [class.active]="activeNavTab() === 'accessibility'"
+        (click)="activeNavTab.set('accessibility')"
+      >
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+        <span>Accessibility &amp; WCAG</span>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        [class.active]="activeNavTab() === 'components'"
+        (click)="activeNavTab.set('components')"
+      >
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+        <span>UI Showcase</span>
+      </button>
+
+      <div class="nav-section-title">WORKSPACES</div>
+      <a routerLink="/" class="nav-item nav-item-link" id="sidebar-extractor-link">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>Logo Extractor</span>
+        <span class="nav-badge-pill">Home</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar Mini Brand Status -->
+    <div class="sidebar-footer">
+      <div class="sidebar-theme-badge">
+        <div class="theme-dots">
+          <span class="theme-dot dot-primary" [style.background]="currentTheme().primary" title="Primary Color"></span>
+          <span class="theme-dot dot-secondary" [style.background]="currentTheme().secondary" title="Secondary Color"></span>
+          <span class="theme-dot dot-accent" [style.background]="currentTheme().accent" title="Accent Color"></span>
+        </div>
+        <div class="theme-mini-info">
+          <span class="theme-status-label">{{ currentTheme().isCustom ? 'Active Brand Theme' : 'Default Theme' }}</span>
+          <span class="theme-title-truncate">{{ currentTheme().name }}</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <div class="dashboard-main-area">
+    <!-- Top Header Navigation -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <button
+          type="button"
+          class="sidebar-toggle-btn"
+          (click)="toggleSidebar()"
+          [attr.aria-label]="isSidebarOpen() ? 'Collapse sidebar' : 'Expand sidebar'"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" />
+          </svg>
+        </button>
+
+        <div class="header-title-box">
+          <h1 class="header-app-title">Brand UI Dashboard</h1>
+          <span class="header-tagline">Dynamic Logo Color Adaptation</span>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="header-search-bar">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35" />
+          </svg>
+          <input
+            type="search"
+            class="header-search-input"
+            placeholder="Search brand tokens, CSS vars, or hex codes..."
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+            aria-label="Search tokens"
+          />
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Return to Extractor Link -->
+        <a routerLink="/" class="btn btn-sm btn-outline header-link" id="header-upload-logo-link">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+          </svg>
+          <span>Upload New Logo</span>
+        </a>
+
+        <!-- Reset Button -->
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary header-reset-btn"
+          id="btn-header-reset-theme"
+          (click)="resetTheme()"
+          title="Restore default system colors"
+        >
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Reset Theme</span>
+        </button>
+
+        <!-- Active Theme Live Pill -->
+        <div class="active-theme-pill" [class.is-custom]="currentTheme().isCustom">
+          <span class="live-indicator"></span>
+          <span class="theme-pill-text">{{ currentTheme().isCustom ? 'Logo Applied' : 'Default' }}</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard Content Body -->
+    <main class="dashboard-content">
+      <!-- Confirmation / Informational Notifications -->
+      @if (notification()) {
+        <div class="alert-banner alert-success animate-slide-down" role="alert">
+          <div class="alert-content">
+            <div class="alert-icon-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div class="alert-text-body">
+              <strong>Success!</strong> {{ notification() }}
+            </div>
+          </div>
+          <button
+            type="button"
+            class="alert-dismiss-btn"
+            (click)="dismissNotification()"
+            aria-label="Dismiss message"
+          >
+            ✕
+          </button>
+        </div>
+      }
+
+      @if (!currentTheme().isCustom && !notification()) {
+        <div class="alert-banner alert-info animate-slide-down" role="status">
+          <div class="alert-content">
+            <div class="alert-icon-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="alert-text-body">
+              <strong>Default Theme Active:</strong> You are currently viewing the default Indigo dashboard theme. Upload any brand logo to see this entire dashboard dynamically adapt to your logo's exact color profile!
+            </div>
+          </div>
+          <a routerLink="/" class="btn btn-sm btn-primary alert-action-btn">
+            Upload Logo Now
+          </a>
+        </div>
+      }
+
+      <!-- Page Hero Header -->
+      <section class="dashboard-hero-row">
+        <div class="hero-left">
+          <h2 class="hero-heading">Brand Design System</h2>
+          <p class="hero-subtext">
+            Demonstrating how a real web application dynamically binds header, sidebar, cards, tables, form controls, and status indicators to logo-extracted design tokens.
+          </p>
+        </div>
+
+        <div class="hero-actions">
+          <a routerLink="/" class="btn btn-primary" id="btn-hero-extract-logo">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            <span>Upload New Logo</span>
+          </a>
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            id="btn-hero-reset-theme"
+            (click)="resetTheme()"
+          >
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>Reset to Default Theme</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Theme Information Panel & Active Brand Theme Section -->
+      <section class="theme-info-panel-card">
+        <div class="panel-header-row">
+          <div class="panel-meta">
+            <span class="badge badge-primary">THEME INFORMATION</span>
+            <h3 class="panel-title">{{ currentTheme().name }}</h3>
+            <p class="panel-desc">
+              @if (currentTheme().isCustom) {
+                <span>Applied from <strong>{{ currentTheme().logoName }}</strong></span>
+                @if (currentTheme().appliedAt) {
+                  <span> • Synchronized at {{ currentTheme().appliedAt }}</span>
+                }
+              } @else {
+                <span>Standard baseline colorway (Indigo / Cyan / Amber).</span>
+              }
+            </p>
+          </div>
+
+          <div class="panel-action-group">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary"
+              (click)="copyToClipboard(':root {\n  --color-primary: ' + currentTheme().primary + ';\n  --color-secondary: ' + currentTheme().secondary + ';\n  --color-accent: ' + currentTheme().accent + ';\n  --color-background: ' + currentTheme().background + ';\n  --color-surface: ' + currentTheme().surface + ';\n  --color-text: ' + currentTheme().text + ';\n  --color-muted-text: ' + currentTheme().mutedText + ';\n  --color-border: ' + currentTheme().border + ';\n}', 'theme-css')"
+            >
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span>{{ copiedHex() ? 'Copied!' : 'Copy CSS Tokens' }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dedicated Required Section: Active Brand Theme -->
+        <div class="active-brand-theme" id="active-brand-theme-section">
+          <div class="section-label-row">
+            <span class="label-heading">ACTIVE BRAND THEME</span>
+            <span class="label-sub">Core Extracted Color Values</span>
+          </div>
+
+          <div class="brand-theme-triad-grid">
+            <!-- Primary Color Card -->
+            <div class="brand-color-box">
+              <div class="color-swatch-banner" [style.background]="currentTheme().primary">
+                <span class="role-pill pill-primary">PRIMARY</span>
+              </div>
+              <div class="color-box-content">
+                <div class="color-box-header">
+                  <span class="color-box-name">Dominant Primary</span>
+                  <button
+                    type="button"
+                    class="btn-copy-chip"
+                    (click)="copyToClipboard(currentTheme().primary, 'primary')"
+                    title="Copy hex code"
+                  >
+                    {{ copiedHex() === currentTheme().primary ? '✓' : '⧉' }}
+                  </button>
+                </div>
+                <strong class="color-box-hex">{{ currentTheme().primary }}</strong>
+                <span class="color-box-var">--color-primary</span>
+              </div>
+            </div>
+
+            <!-- Secondary Color Card -->
+            <div class="brand-color-box">
+              <div class="color-swatch-banner" [style.background]="currentTheme().secondary">
+                <span class="role-pill pill-secondary">SECONDARY</span>
+              </div>
+              <div class="color-box-content">
+                <div class="color-box-header">
+                  <span class="color-box-name">Secondary Brand</span>
+                  <button
+                    type="button"
+                    class="btn-copy-chip"
+                    (click)="copyToClipboard(currentTheme().secondary, 'secondary')"
+                    title="Copy hex code"
+                  >
+                    {{ copiedHex() === currentTheme().secondary ? '✓' : '⧉' }}
+                  </button>
+                </div>
+                <strong class="color-box-hex">{{ currentTheme().secondary }}</strong>
+                <span class="color-box-var">--color-secondary</span>
+              </div>
+            </div>
+
+            <!-- Accent Color Card -->
+            <div class="brand-color-box">
+              <div class="color-swatch-banner" [style.background]="currentTheme().accent">
+                <span class="role-pill pill-accent">ACCENT</span>
+              </div>
+              <div class="color-box-content">
+                <div class="color-box-header">
+                  <span class="color-box-name">Accent Highlight</span>
+                  <button
+                    type="button"
+                    class="btn-copy-chip"
+                    (click)="copyToClipboard(currentTheme().accent, 'accent')"
+                    title="Copy hex code"
+                  >
+                    {{ copiedHex() === currentTheme().accent ? '✓' : '⧉' }}
+                  </button>
+                </div>
+                <strong class="color-box-hex">{{ currentTheme().accent }}</strong>
+                <span class="color-box-var">--color-accent</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Extended Swatch Strip for Complete 6 Tokens -->
+          <div class="extended-swatches-strip">
+            <span class="strip-label">All Semantic Tokens:</span>
+            <div class="swatches-pills-row">
+              <div class="swatch-mini-pill" (click)="copyToClipboard(currentTheme().primary, 'primary')">
+                <span class="mini-circle" [style.background]="currentTheme().primary"></span>
+                <span>Primary: <strong>{{ currentTheme().primary }}</strong></span>
+              </div>
+              <div class="swatch-mini-pill" (click)="copyToClipboard(currentTheme().secondary, 'secondary')">
+                <span class="mini-circle" [style.background]="currentTheme().secondary"></span>
+                <span>Secondary: <strong>{{ currentTheme().secondary }}</strong></span>
+              </div>
+              <div class="swatch-mini-pill" (click)="copyToClipboard(currentTheme().accent, 'accent')">
+                <span class="mini-circle" [style.background]="currentTheme().accent"></span>
+                <span>Accent: <strong>{{ currentTheme().accent }}</strong></span>
+              </div>
+              <div class="swatch-mini-pill" (click)="copyToClipboard(currentTheme().uiTone, 'uiTone')">
+                <span class="mini-circle" [style.background]="currentTheme().uiTone"></span>
+                <span>UI Tone: <strong>{{ currentTheme().uiTone }}</strong></span>
+              </div>
+              <div class="swatch-mini-pill" (click)="copyToClipboard(currentTheme().background, 'background')">
+                <span class="mini-circle" [style.background]="currentTheme().background"></span>
+                <span>Canvas: <strong>{{ currentTheme().background }}</strong></span>
+              </div>
+              <div class="swatch-mini-pill" (click)="copyToClipboard(currentTheme().neutralStructural || currentTheme().border, 'border')">
+                <span class="mini-circle" [style.background]="currentTheme().neutralStructural || currentTheme().border"></span>
+                <span>Border: <strong>{{ currentTheme().neutralStructural || currentTheme().border }}</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Overview Cards (4 Metric Highlights) -->
+      <section class="overview-cards-grid" aria-label="Brand Overview Metrics">
+        <!-- Metric Card 1: Dominant Primary -->
+        <article class="metric-card card-primary-accent">
+          <div class="metric-card-header">
+            <span class="metric-label">Primary Dominance</span>
+            <span class="metric-icon-wrap" [style.color]="currentTheme().primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </span>
+          </div>
+          <div class="metric-body">
+            <div class="metric-value" [style.color]="currentTheme().primary">99.4%</div>
+            <div class="metric-sub">
+              <span class="trend-badge trend-up">Dominant</span>
+              <span>Visual Anchor</span>
+            </div>
+          </div>
+          <div class="metric-footer-bar">
+            <div class="metric-fill" [style.background]="currentTheme().primary" style="width: 85%;"></div>
+          </div>
+        </article>
+
+        <!-- Metric Card 2: Secondary Visual Balance -->
+        <article class="metric-card card-secondary-accent">
+          <div class="metric-card-header">
+            <span class="metric-label">Secondary Balance</span>
+            <span class="metric-icon-wrap" [style.color]="currentTheme().secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </span>
+          </div>
+          <div class="metric-body">
+            <div class="metric-value" [style.color]="currentTheme().secondary">Balanced</div>
+            <div class="metric-sub">
+              <span class="trend-badge trend-neutral">Harmonized</span>
+              <span>Sub-features &amp; Tags</span>
+            </div>
+          </div>
+          <div class="metric-footer-bar">
+            <div class="metric-fill" [style.background]="currentTheme().secondary" style="width: 62%;"></div>
+          </div>
+        </article>
+
+        <!-- Metric Card 3: Accent Pop Highlight -->
+        <article class="metric-card card-accent-highlight">
+          <div class="metric-card-header">
+            <span class="metric-label">Interactive Accents</span>
+            <span class="metric-icon-wrap" [style.color]="currentTheme().accent">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+            </span>
+          </div>
+          <div class="metric-body">
+            <div class="metric-value" [style.color]="currentTheme().accent">High Pop</div>
+            <div class="metric-sub">
+              <span class="trend-badge trend-accent">Callouts</span>
+              <span>Notifications &amp; Badges</span>
+            </div>
+          </div>
+          <div class="metric-footer-bar">
+            <div class="metric-fill" [style.background]="currentTheme().accent" style="width: 45%;"></div>
+          </div>
+        </article>
+
+        <!-- Metric Card 4: WCAG Contrast Ratio -->
+        <article class="metric-card card-accessibility">
+          <div class="metric-card-header">
+            <span class="metric-label">WCAG Compliance</span>
+            <span class="metric-icon-wrap text-success">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
+          </div>
+          <div class="metric-body">
+            <div class="metric-value">AAA Ratio</div>
+            <div class="metric-sub">
+              <span class="trend-badge trend-success">14.2:1</span>
+              <span>High Contrast Verified</span>
+            </div>
+          </div>
+          <div class="metric-footer-bar">
+            <div class="metric-fill bg-success" style="width: 95%;"></div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Two-Column Showcase: Interactive Form Controls & Buttons -->
+      <section class="showcase-grid">
+        <!-- Form Controls Showcase -->
+        <div class="showcase-card">
+          <div class="showcase-card-header">
+            <div>
+              <h4 class="showcase-card-title">Interactive Form Controls</h4>
+              <p class="showcase-card-sub">Demonstrates inputs, selects, toggles and radios styled with semantic variables</p>
+            </div>
+            <span class="badge badge-secondary">FORM CONTROLS</span>
+          </div>
+
+          <form class="demo-form" (submit)="$event.preventDefault()">
+            <div class="form-group">
+              <label class="form-label" for="brandPortalName">Brand Portal Identifier</label>
+              <input
+                id="brandPortalName"
+                type="text"
+                class="form-control"
+                [ngModel]="demoTextInput()"
+                (ngModelChange)="demoTextInput.set($event)"
+                name="portalName"
+                placeholder="Enter workspace name"
+              />
+              <span class="form-hint">Focused borders dynamically glow with <code>--color-primary</code>.</span>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label class="form-label" for="deploymentTier">Deployment Environment</label>
+                <select
+                  id="deploymentTier"
+                  class="form-control form-select"
+                  [ngModel]="demoSelect()"
+                  (ngModelChange)="demoSelect.set($event)"
+                  name="deployEnv"
+                >
+                  <option value="production">Production Environment</option>
+                  <option value="staging">Staging Sandbox</option>
+                  <option value="preview">Branch Preview</option>
+                </select>
+              </div>
+
+              <div class="form-group flex-1">
+                <label class="form-label">Theme Mode Radio</label>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input
+                      type="radio"
+                      name="themeMode"
+                      value="light"
+                      [checked]="demoRadio() === 'light'"
+                      (change)="demoRadio.set('light')"
+                    />
+                    <span>Light Surface</span>
+                  </label>
+                  <label class="radio-label">
+                    <input
+                      type="radio"
+                      name="themeMode"
+                      value="tinted"
+                      [checked]="demoRadio() === 'tinted'"
+                      (change)="demoRadio.set('tinted')"
+                    />
+                    <span>Harmonized</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="toggle-control">
+                <input
+                  type="checkbox"
+                  [checked]="demoToggle()"
+                  (change)="demoToggle.set(!demoToggle())"
+                />
+                <span class="toggle-slider"></span>
+                <span class="toggle-text">Enable automatic brand asset sync across workspaces</span>
+              </label>
+            </div>
+          </form>
+        </div>
+
+        <!-- Buttons, Badges & Indicators Showcase -->
+        <div class="showcase-card">
+          <div class="showcase-card-header">
+            <div>
+              <h4 class="showcase-card-title">Buttons, Badges &amp; Status Indicators</h4>
+              <p class="showcase-card-sub">Core interactive triggers using Primary, Secondary, and Accent tokens</p>
+            </div>
+            <span class="badge badge-accent">COMPONENTS</span>
+          </div>
+
+          <div class="component-showcase-stack">
+            <!-- Buttons Row -->
+            <div class="showcase-group">
+              <span class="group-label">Button Variants:</span>
+              <div class="buttons-row">
+                <button type="button" class="btn btn-primary" id="btn-primary-demo">
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Primary CTA</span>
+                </button>
+
+                <button type="button" class="btn btn-secondary" id="btn-secondary-demo">
+                  <span>Secondary Button</span>
+                </button>
+
+                <button type="button" class="btn btn-accent" id="btn-accent-demo">
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span>Accent Action</span>
+                </button>
+
+                <button type="button" class="btn btn-outline" id="btn-outline-demo">
+                  <span>Outline Button</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Badges Row -->
+            <div class="showcase-group">
+              <span class="group-label">Status Badges:</span>
+              <div class="badges-row">
+                <span class="badge badge-primary">Primary Status</span>
+                <span class="badge badge-secondary">Secondary Feature</span>
+                <span class="badge badge-accent">Accent Attention</span>
+                <span class="badge badge-ui-tone">UI Tone Muted</span>
+                <span class="badge badge-success">✓ Verified Active</span>
+              </div>
+            </div>
+
+            <!-- Gradient Card Callout -->
+            <div class="brand-gradient-callout">
+              <div class="callout-content">
+                <strong class="callout-title">Theme Gradient Harmony</strong>
+                <p class="callout-desc">
+                  Live blended gradient synthesizing <code>--color-primary</code> through <code>--color-secondary</code>.
+                </p>
+              </div>
+              <div class="callout-arrow">➔</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data Table (Requirement 5) -->
+      <section class="table-section-card" aria-labelledby="token-table-title">
+        <div class="table-header-toolbar">
+          <div>
+            <h3 id="token-table-title" class="table-title">Brand Design Token Registry</h3>
+            <p class="table-subtitle">Structured mapping of extracted logo colors applied across dashboard layout elements</p>
+          </div>
+
+          <div class="table-filter-group">
+            <button
+              type="button"
+              class="filter-pill"
+              [class.active]="selectedFilter() === 'all'"
+              (click)="selectedFilter.set('all')"
+            >
+              All Tokens ({{ tableItems().length }})
+            </button>
+            <button
+              type="button"
+              class="filter-pill"
+              [class.active]="selectedFilter() === 'brand'"
+              (click)="selectedFilter.set('brand')"
+            >
+              Brand Core
+            </button>
+            <button
+              type="button"
+              class="filter-pill"
+              [class.active]="selectedFilter() === 'neutral'"
+              (click)="selectedFilter.set('neutral')"
+            >
+              Harmonized Neutrals
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive-wrapper">
+          <table class="brand-data-table">
+            <thead>
+              <tr>
+                <th scope="col">Design Token &amp; Color</th>
+                <th scope="col">Role &amp; Semantic Use</th>
+                <th scope="col">CSS Custom Property</th>
+                <th scope="col">HEX Value</th>
+                <th scope="col">WCAG Rating</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of tableItems(); track item.cssVar) {
+                <tr class="table-row">
+                  <td class="token-name-cell">
+                    <div class="color-dot-swatch" [style.background]="item.hex"></div>
+                    <div class="token-title-meta">
+                      <strong>{{ item.name }}</strong>
+                      <span class="token-usage-desc">{{ item.usage }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="role-pill-sm">{{ item.role }}</span>
+                  </td>
+                  <td>
+                    <code class="css-var-code">{{ item.cssVar }}</code>
+                  </td>
+                  <td>
+                    <span class="hex-badge-font">{{ item.hex }}</span>
+                  </td>
+                  <td>
+                    <span class="contrast-score-pill">{{ item.contrast }}</span>
+                  </td>
+                  <td>
+                    @if (item.status === 'core') {
+                      <span class="badge badge-primary">Core Brand</span>
+                    } @else {
+                      <span class="badge badge-secondary">Harmonized</span>
+                    }
+                  </td>
+                  <td class="text-right">
+                    <button
+                      type="button"
+                      class="btn-row-action"
+                      (click)="copyToClipboard(item.hex, item.cssVar)"
+                      title="Copy hex code"
+                    >
+                      {{ copiedHex() === item.hex ? 'Copied!' : 'Copy' }}
+                    </button>
+                  </td>
+                </tr>
+              }
+              @if (tableItems().length === 0) {
+                <tr>
+                  <td colspan="7" class="empty-table-state">
+                    No matching tokens found for search query "{{ searchQuery() }}".
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

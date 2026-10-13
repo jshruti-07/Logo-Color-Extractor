@@ -9,7 +9,27 @@
         </div>
       </a>
 
+      <!-- Dashboard & Extractor Navigation Links -->
+      <nav class="topbar-nav-links" aria-label="Primary Navigation">
+        <a routerLink="/" class="topbar-nav-link active" aria-current="page">
+          <svg width="16" height="16" class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+          </svg>
+          <span>Extractor</span>
+        </a>
+        <a routerLink="/dashboard" class="topbar-nav-link" id="nav-link-header-dashboard">
+          <svg width="16" height="16" class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+          <span>Dashboard</span>
+          @if (hasActiveDashboardTheme()) {
+            <span class="nav-theme-applied-dot" [style.background]="activeDashboardPrimary()" title="Logo theme active on Dashboard"></span>
+          }
+        </a>
+      </nav>
+
       <div class="header-actions">
+
         <div class="format-pills" aria-label="Supported image formats">
           <span class="format-pill">PNG</span>
           <span class="format-pill">JPG</span>
@@ -680,12 +700,27 @@
                 </p>
               </div>
 
-              <button class="btn btn-sm btn-secondary" type="button" (click)="copyValue(exportContent(), 'Copied theme code tokens!')">
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-                Copy Theme Code
-              </button>
+              <div class="theme-header-actions-group">
+                <button
+                  class="btn btn-primary btn-use-theme"
+                  type="button"
+                  id="btn-use-theme-header"
+                  (click)="useThisTheme()"
+                  title="Apply this theme directly to the Dashboard screen"
+                >
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Use This Theme</span>
+                </button>
+
+                <button class="btn btn-sm btn-secondary" type="button" (click)="copyValue(exportContent(), 'Copied theme code tokens!')">
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  <span>Copy Theme Code</span>
+                </button>
+              </div>
             </div>
 
             @if (websiteThemePalette(); as palette) {
@@ -980,6 +1015,34 @@
                     </div>
                   </div>
                 </div>
+              </div>
+
+              <!-- Prominent Bottom Theme Application Card -->
+              <div class="theme-apply-bottom-bar animate-fade-in">
+                <div class="apply-bar-text">
+                  <div class="apply-bar-icon-gem">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="apply-bar-title">Ready to see your brand live on the Dashboard?</h4>
+                    <p class="apply-bar-desc">
+                      Apply these 6 extracted design tokens directly to the live Dashboard interface with one click.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-use-theme btn-use-theme-lg"
+                  id="btn-use-theme-bottom"
+                  (click)="useThisTheme()"
+                >
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Use This Theme</span>
+                </button>
               </div>
             }
           </section>
