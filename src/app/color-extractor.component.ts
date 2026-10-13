@@ -20,6 +20,11 @@ import {
 } from './models/color.model';
 import { ColorEngine } from './services/color-engine';
 import { SAMPLE_PRESETS } from './services/sample-presets';
+import {
+  extractBrandColors,
+  parseSvgColors,
+  snapToExactColors
+} from './services/brand-color-extractor';
 
 @Component({
   selector: 'app-color-extractor',
@@ -46,6 +51,11 @@ export class ColorExtractorComponent implements OnInit {
   activeTab = signal<'palette' | 'harmonies' | 'export'>('harmonies'); // Default directly to Website Theme Palette for fast viewing
   selectedExportFormat = signal<'css' | 'tailwind' | 'json' | 'scss'>('css');
   
+  // Extraction Sensitivity & Background controls
+  sensitivity = signal<'broad' | 'balanced' | 'detailed'>('balanced');
+  keepBackground = signal<boolean>(false);
+  currentSvgColors: string[] = [];
+
   // Preview Stage Display Customizations
   previewBgMode = signal<'checkerboard' | 'white' | 'dark' | 'slate'>('checkerboard');
   isPreviewModalOpen = signal<boolean>(false);
@@ -216,6 +226,7 @@ export class ColorExtractorComponent implements OnInit {
   }
 
   loadPreset(preset: SamplePreset): void {
+    this.currentSvgColors = parseSvgColors(preset.svgData);
     const blob = new Blob([preset.svgData], { type: 'image/svg+xml' });
     const file = new File([blob], `${preset.id}-logo.svg`, { type: 'image/svg+xml' });
     this.processFile(file);
@@ -239,6 +250,17 @@ export class ColorExtractorComponent implements OnInit {
       this.error.set(err);
       this.showToast(err, 'error');
       return;
+    }
+
+    if (file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg')) {
+      try {
+        const svgText = await file.text();
+        this.currentSvgColors = parseSvgColors(svgText);
+      } catch {
+        this.currentSvgColors = [];
+      }
+    } else {
+      this.currentSvgColors = [];
     }
 
     this.allExtractedColors.set([]);
@@ -276,10 +298,10 @@ export class ColorExtractorComponent implements OnInit {
       this.allExtractedColors.set(colors);
 
       if (colors.length === 0) {
-        this.error.set('No visible colors detected. The image appears fully transparent.');
-        this.showToast('No visible pixels found in image', 'warning');
+        this.error.set('No visible brand colors detected. The image appears fully transparent or matched background.');
+        this.showToast('No visible brand pixels found in image', 'warning');
       } else {
-        this.showToast(`Extracted all ${colors.length} unique colors from logo`, 'success');
+        this.showToast(`Extracted ${colors.length} brand colors from logo`, 'success');
       }
     } catch (e) {
       console.error(e);
@@ -301,6 +323,7 @@ export class ColorExtractorComponent implements OnInit {
     this.allExtractedColors.set([]);
     this.selectedHarmoniesIndex.set(0);
     this.uiToneSourceIndex.set(0);
+    this.currentSvgColors = [];
     this.isAnalyzing.set(false);
     this.error.set(null);
     this.currentImageElement = null;
@@ -313,6 +336,38 @@ export class ColorExtractorComponent implements OnInit {
     this.colorCount.set(count);
     if (count > 0 && this.selectedHarmoniesIndex() >= count) {
       this.selectedHarmoniesIndex.set(0);
+    }
+  }
+
+  setSensitivity(level: 'broad' | 'balanced' | 'detailed'): void {
+    if (this.sensitivity() !== level) {
+      this.sensitivity.set(level);
+      this.reanalyze();
+    }
+  }
+
+  setKeepBackground(keep: boolean): void {
+    if (this.keepBackground() !== keep) {
+      this.keepBackground.set(keep);
+      this.reanalyze();
+    }
+  }
+
+  private reanalyze(): void {
+    if (!this.currentImageElement) return;
+    const { colors, visiblePixels, totalPixels } = this.extractColorsFromImage(this.currentImageElement);
+    this.allExtractedColors.set(colors);
+    this.selectedHarmoniesIndex.set(0);
+    this.uiToneSourceIndex.set(0);
+
+    if (this.imageMeta()) {
+      this.imageMeta.update((meta) => (meta ? { ...meta, visiblePixels, totalPixels } : null));
+    }
+
+    if (colors.length === 0) {
+      this.showToast('No brand colors found with current settings', 'warning');
+    } else {
+      this.showToast(`Extracted ${colors.length} brand colors from logo`, 'success');
     }
   }
 
@@ -497,17 +552,16 @@ export class ColorExtractorComponent implements OnInit {
       img.src = url;
     });
   }
-
   private extractColorsFromImage(img: HTMLImageElement): {
     colors: ColorResult[];
     visiblePixels: number;
     totalPixels: number;
   } {
-    const naturalW = img.naturalWidth || 160;
-    const naturalH = img.naturalHeight || 160;
+    const naturalW = img.naturalWidth || 128;
+    const naturalH = img.naturalHeight || 128;
     
-    // Scale for high precision color extraction
-    const width = 160;
+    // Scale on a canvas of width min(512, max(128, naturalWidth))
+    const width = Math.min(512, Math.max(128, naturalW));
     const height = Math.max(1, Math.round((naturalH / naturalW) * width));
 
     const canvas = document.createElement('canvas');
@@ -519,68 +573,29 @@ export class ColorExtractorComponent implements OnInit {
       throw new Error('Canvas 2D context unavailable');
     }
 
+    ctx.imageSmoothingEnabled = false;
     ctx.drawImage(img, 0, 0, width, height);
     const { data } = ctx.getImageData(0, 0, width, height);
 
-    const totalPixels = width * height;
-    const colorCounts: Record<string, number> = {};
-    const blockSize = 6; // Fine-grained quantization bin
-    let visiblePixels = 0;
+    const mergeDeltaE = this.sensitivity() === 'broad' ? 20 : this.sensitivity() === 'detailed' ? 9 : 14;
+    const extraction = extractBrandColors(data, width, height, {
+      mergeDeltaE,
+      removeBackground: !this.keepBackground()
+    });
 
-    for (let i = 0; i < data.length; i += 4) {
-      const a = data[i + 3];
-      // Exclude transparent background pixels
-      if (a < 125) continue;
-      
-      visiblePixels++;
-
-      const qr = Math.min(255, Math.round(data[i] / blockSize) * blockSize);
-      const qg = Math.min(255, Math.round(data[i + 1] / blockSize) * blockSize);
-      const qb = Math.min(255, Math.round(data[i + 2] / blockSize) * blockSize);
-
-      const key = `${qr},${qg},${qb}`;
-      colorCounts[key] = (colorCounts[key] || 0) + 1;
+    let brandColors = extraction.colors;
+    if (this.currentSvgColors.length > 0) {
+      brandColors = snapToExactColors(brandColors, this.currentSvgColors, 12);
     }
 
-    const sortedKeys = Object.keys(colorCounts).sort((a, b) => colorCounts[b] - colorCounts[a]);
-    const selected: { r: number; g: number; b: number; count: number }[] = [];
-    const minColorDistance = 16; // Distinguish distinct subtle brand colors
-
-    for (const key of sortedKeys) {
-      const [r, g, b] = key.split(',').map(Number);
-      const count = colorCounts[key];
-
-      // Ignore single isolated anti-aliased pixels
-      if (count < 2 && visiblePixels > 200) continue;
-
-      const existsClose = selected.some((item) => {
-        const dr = item.r - r;
-        const dg = item.g - g;
-        const db = item.b - b;
-        return Math.sqrt(dr * dr + dg * dg + db * db) < minColorDistance;
-      });
-
-      if (!existsClose) {
-        selected.push({ r, g, b, count });
-      } else {
-        const closest = selected.find((item) => {
-          const dr = item.r - r;
-          const dg = item.g - g;
-          const db = item.b - b;
-          return Math.sqrt(dr * dr + dg * dg + db * db) < minColorDistance;
-        });
-        if (closest) closest.count += count;
-      }
-    }
-
-    const results: ColorResult[] = selected.map((item) => {
-      return ColorEngine.buildColorResult(item.r, item.g, item.b, item.count, visiblePixels);
+    const results: ColorResult[] = brandColors.map((item) => {
+      return ColorEngine.buildColorResult(item.r, item.g, item.b, item.count, extraction.analyzedPixels);
     });
 
     return {
       colors: results,
-      visiblePixels,
-      totalPixels
+      visiblePixels: extraction.visiblePixels,
+      totalPixels: width * height
     };
   }
 }

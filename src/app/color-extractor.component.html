@@ -322,6 +322,60 @@
                 </div>
               </div>
 
+              <!-- Color Detail Control -->
+              <div class="density-controls">
+                <span class="control-label">Color Detail:</span>
+                <div class="pill-segmented-control" role="radiogroup" aria-label="Color clustering detail">
+                  <button
+                    type="button"
+                    class="segment-btn"
+                    [class.active]="sensitivity() === 'broad'"
+                    (click)="setSensitivity('broad')"
+                  >
+                    Broad
+                  </button>
+                  <button
+                    type="button"
+                    class="segment-btn"
+                    [class.active]="sensitivity() === 'balanced'"
+                    (click)="setSensitivity('balanced')"
+                  >
+                    Balanced
+                  </button>
+                  <button
+                    type="button"
+                    class="segment-btn"
+                    [class.active]="sensitivity() === 'detailed'"
+                    (click)="setSensitivity('detailed')"
+                  >
+                    Detailed
+                  </button>
+                </div>
+              </div>
+
+              <!-- Background Control -->
+              <div class="density-controls">
+                <span class="control-label">Background:</span>
+                <div class="pill-segmented-control" role="radiogroup" aria-label="Background handling">
+                  <button
+                    type="button"
+                    class="segment-btn"
+                    [class.active]="!keepBackground()"
+                    (click)="setKeepBackground(false)"
+                  >
+                    Ignore
+                  </button>
+                  <button
+                    type="button"
+                    class="segment-btn"
+                    [class.active]="keepBackground()"
+                    (click)="setKeepBackground(true)"
+                  >
+                    Include
+                  </button>
+                </div>
+              </div>
+
               <!-- Action Bar -->
               <div class="workspace-actions">
                 <label class="btn btn-secondary">
